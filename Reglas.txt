@@ -1,0 +1,249 @@
+El siguiente documento es en el que se basan las reglas para la asistencia de la empresa.
+
+Quince (15) retardos o inasistencias injustificadas acumuladas llevarán a la
+culminación anticipada del proceso de entrenamiento (ver Capítulo II,
+Regulación de Asistencias y Permanencia en el Entrenamiento).
+
+Capítulo II. Regulación de Asistencias y Permanencia en el Entrenamiento
+Principios del control de asistencia
+La asistencia al proceso de entrenamiento constituye una práctica formativa que
+refleja la responsabilidad individual del coder y su disposición al aprendizaje. El
+control de asistencia se fundamenta en los siguientes principios:
+• Responsabilidad individual: cada coder asume el compromiso de participar
+activamente en su proceso formativo.
+• Corresponsabilidad institucional: Riwi brindará acompañamiento preventivo
+y formativo ante dificultades de asistencia.
+• Cultura formativa con enfoque laboral: la puntualidad y la presencia son
+hábitos fundamentales para la empleabilidad.
+• Continuidad del proceso: la asistencia garantiza la apropiación del
+conocimiento y el trabajo colaborativo.
+• Enfoque preventivo: las acciones priorizan el acompañamiento antes que
+la sanción.
+• Gradualidad: las consecuencias se aplican progresivamente según la
+reiteración de las inasistencias.
+Definiciones
+Para efectos de este reglamento se entenderá por:
+Asistencia: presencia activa y comprobable del coder en las jornadas
+programadas.
+Inasistencia justificada: ausencia respaldada por causa válida y soporte
+verificable, presentado dentro de los plazos establecidos.
+Inasistencia no justificada: ausencia sin causa válida, sin soporte o sin reporte
+oportuno.
+Retraso: ingreso posterior al inicio oficial de la jornada.
+Abandono del proceso: ausencia prolongada sin comunicación que evidencie
+desinterés en la continuidad del entrenamiento.
+Lineamientos para el reporte de inasistencias
+Para garantizar claridad, trazabilidad y debido proceso, el reporte de inasistencias
+deberá cumplir con los siguientes lineamientos:
+Canales oficiales de reporte: el reporte debe realizarse exclusivamente por los
+canales oficiales establecidos por Riwi para tal fin. No se considerarán válidos
+mensajes enviados por medios informales o a través de terceros no autorizados.
+El canal autorizado para el reporte de inasistencias es el correo institucional
+formacion@riwi.io (Sede Medellín) y formacion.barranquilla@riwi.io (Sede
+Barranquilla). Adicionalmente, el coder podrá comunicarle a su Team Leader de
+Desarrollo cualquier calamidad o situación que en el momento no pueda
+reportarse de manera inmediata por correo, utilizando el canal Discord. Lo anterior
+no exime al entrenado de reportar formalmente su inasistencia por correo
+institucional dentro de los tiempos estipulados, en la medida que tenga acceso al
+mismo.
+Información mínima obligatoria: todo reporte deberá contener como mínimo:
+• Nombre completo del coder y número de identificación.
+• Clan y jornada de entrenamiento.
+• Cohorte.
+• Fecha o fechas de la inasistencia.
+• Motivo de la ausencia.
+• Indicación y/o adjunción del soporte documental.
+• Fecha estimada de reintegro (si aplica).
+Oportunidad del reporte: el reporte deberá realizarse:
+• Antes de la jornada, cuando la ausencia sea previsible.
+• Durante las primeras horas, en situaciones imprevistas.
+• Posteriormente, solo en casos de fuerza mayor debidamente justificables,
+con un plazo máximo de tres (3) días posteriores a la inasistencia.
+Validación de inasistencias
+Toda inasistencia será validada por el área de Habilidades Socioemocionales,
+quien verificará:
+• Oportunidad del reporte.
+• Información suministrada y veracidad de esta.
+• Soportes documentales cuando correspondan.
+La notificación de una ausencia no implica su justificación automática. La
+institución podrá validar situaciones excepcionales bajo criterios de razonabilidad,
+proporcionalidad y trayectoria del coder.
+Ruta de acción según tipo de ausencia
+Inasistencias reiteradas sin justificación:
+• El Team Leader de Desarrollo reporta la inasistencia vía Moodle el mismo
+día en que se presenta.
+• El Team Leader de Habilidades Socioemocionales, a partir de la tercera
+inasistencia acumulada, contacta al coder dentro de las 24 horas siguientes
+para indagar sobre su situación.
+• Si el coder no responde al contacto inicial, se realizan al menos dos (2)
+intentos adicionales por diferentes medios (llamada telefónica, correo
+electrónico, WhatsApp, Moodle, Discord).
+• Si transcurridos tres (3) días no hay respuesta ni justificación, se activa el
+protocolo de seguimiento correspondiente al umbral acumulado de
+inasistencias.
+• Cada contacto e intento de comunicación queda registrado en el sistema
+con fecha, hora y medio utilizado.
+Incapacidades médicas:
+• El coder debe informar la incapacidad médica al Team Leader de
+Desarrollo el mismo día en que es emitida o, como máximo, al día hábil
+siguiente.
+• El coder debe presentar el soporte digital de la incapacidad médica dentro
+de los tres (3) días hábiles siguientes a su reintegro, vía correo electrónico.
+• El Team Leader de Habilidades Socioemocionales valida la incapacidad,
+actualiza la asistencia en Moodle y notifica al Team Leader de Desarrollo.
+• El Team Leader de Habilidades Socioemocionales realiza seguimiento al
+reintegro del coder y ofrece apoyo si la situación de salud lo amerita.
+• Las incapacidades médicas cuentan como inasistencias justificadas; sin
+embargo, una incapacidad prolongada podría generar una deuda técnica
+que deberá ser gestionada oportunamente.
+Excusas no médicas:
+• El coder debe comunicar la necesidad de ausentarse con la mayor
+antelación posible (preferiblemente 24 horas antes), exponiendo la causa.
+• Debe presentar soporte dentro de los tres (3) días hábiles siguientes a su
+reintegro.
+• Son soportes válidos: citaciones judiciales o administrativas con fecha, hora
+y entidad emisora; certificados de defunción; constancias de trámites
+oficiales obligatorios; y otros documentos que acrediten fuerza mayor o
+caso fortuito.
+• Si la excusa es validada, no cuenta como inasistencia injustificada. Si no
+es validada, cuenta para el umbral de inasistencias correspondiente.
+• Las excusas válidas y debidamente soportadas no podrán exceder más de
+dos (2) por mes, salvo situaciones excepcionales evaluadas caso por caso.
+Ausencias sin comunicación previa:
+• Si un coder se ausenta sin comunicación previa y tampoco responde a los
+intentos de contacto durante tres (3) días consecutivos, se considera una
+señal de alerta alta.
+• El Team Leader de Habilidades Socioemocionales intensifica los intentos
+de contacto utilizando todos los medios disponibles y, si es posible,
+contactando referencias o personas autorizadas por el coder (acudiente).
+• Si transcurridos cinco (5) días hábiles no se ha logrado contacto alguno, se
+activa el protocolo de presunción de abandono del puesto de entrenamiento
+y, con ello, la cláusula de penalidad contemplada en el Acuerdo de
+Entrenamiento.
+• Todos los intentos de contacto quedan documentados en el sistema.
+Umbrales de intervención progresiva
+Con el fin de promover la permanencia formativa, se establecen niveles de
+intervención según la acumulación de inasistencias no justificadas:
+Umbral 1 — Alerta Temprana (1 a 2 inasistencias no justificadas en la
+semana)
+• Al registrarse la primera inasistencia no justificada dentro de la misma
+semana, el Team Leader de Desarrollo generará un acercamiento informal
+con el coder a través de Discord.
+• Al acumularse dos inasistencias en la semana, Moodle enviará de manera
+automática un mensaje de recordatorio al coder, reforzando la importancia
+de la asistencia como parte del entrenamiento.
+• En caso de presentarse una tercera inasistencia no justificada en la misma
+semana, el Team Leader de Desarrollo notifica formalmente al Team
+Leader de Habilidades Socioemocionales, quien realizará un contacto
+directo con el coder para indagar las causas, brindar acompañamiento
+inicial y reforzar las expectativas institucionales.
+• La interacción realizada será debidamente registrada en el consolidado de
+cada cohorte para efectos de seguimiento y trazabilidad.
+Responsable: Team Leader de Desarrollo, Habilidades Socioemocionales e
+Inglés.
+Tipo de comunicación: conversación informal, presencial o telefónica.
+Seguimiento: observación durante las siguientes dos semanas.
+Umbral 2 — Seguimiento Activo (3 a 4 inasistencias no justificadas en un
+mes, o patrón recurrente de retrasos)
+• El Team Leader de Habilidades Socioemocionales programa una
+conversación formal con el coder.
+• Se analizan conjuntamente las causas de las inasistencias y se identifica si
+existen barreras que requieran apoyo.
+• Se construye un compromiso verbal de mejora con metas claras de
+asistencia.
+• Se comunica al coder que, de continuar la situación, se aplicará un llamado
+de atención formal.
+• Se registra el seguimiento y los compromisos en el sistema institucional.
+Responsable: Team Leader de Habilidades Socioemocionales.
+Tipo de comunicación: conversación formal documentada (correo electrónico
+con resumen de acuerdos).
+Seguimiento: revisión semanal del cumplimiento durante el mes siguiente.
+Umbral 3 — Llamado de Atención y Plan de Mejora (5 a 13 inasistencias no
+justificadas en un mes, o incumplimiento del compromiso del Umbral 2)
+Objetivo: intervención correctiva formal con última oportunidad de mejora.
+• El equipo de Habilidades Socioemocionales emite un llamado de atención
+formal por escrito.
+• Se realiza reunión entre el coder, el Team Leader de Habilidades
+Socioemocionales y la Coordinación de Habilidades Socioemocionales.
+• Se establece un Plan de Compromiso de Asistencias escrito que incluye:
+compromiso de asistencia del 95% durante las siguientes cuatro (4)
+semanas, acciones específicas que el coder implementará para garantizar
+su asistencia y consecuencias claras en caso de incumplimiento.
+• El coder firma el Plan de Mejora en señal de aceptación y compromiso.
+• Se envía copia del Plan de Mejora al correo electrónico del coder.
+Responsable: equipo de Habilidades Socioemocionales.
+Tipo de comunicación: comunicación formal escrita con reunión concertada.
+Seguimiento: revisión semanal del cumplimiento del Plan de Mejora. El Team
+Leader de Habilidades Socioemocionales envía reportes semanales a la
+Coordinación.
+Umbral 4 — Proceso de Retiro (15 o más inasistencias no justificadas en
+un mes, 15 en total durante el entrenamiento, o incumplimiento del Plan de
+Compromiso de Asistencias del Umbral 3)
+• La Coordinación de Habilidades Socioemocionales notifica por escrito al
+coder el inicio del proceso de retiro, señalando el número y fechas de las
+inasistencias, así como el incumplimiento del Plan de Compromiso de
+Asistencias, si aplica.
+• Se realiza una reunión de cierre con el coder, en la que se evalúan los
+descargos presentados.
+• Si no existen causas de fuerza mayor comprobables que justifiquen la
+situación, se procede con el retiro formal del programa.
+• Se emite comunicación escrita de retiro especificando las causas que
+motivaron la decisión y la fecha efectiva del mismo.
+• Se realiza cierre administrativo y baja de la plataforma Moodle, y se notifica
+el caso al vicepresidente de Operaciones.
+Responsable: Coordinación de Habilidades Socioemocionales.
+Tipo de comunicación: comunicación formal escrita con reunión presencial de
+cierre.
+Criterios para considerar abandono del puesto de entrenamiento
+Se considera que un coder ha abandonado su puesto de entrenamiento cuando
+se presentan las siguientes situaciones:
+9.1. Días consecutivos de ausencia: ausencia continua de cinco (5) días hábiles
+consecutivos sin comunicación alguna con la institución, pese a los intentos de
+contacto realizados.
+9.2. Días acumulados de ausencia: ausencia acumulada de diez (10) días
+hábiles en un período de treinta (30) días calendario sin justificación válida.
+9.3. Falta de comunicación: falta total de respuesta a los intentos de contacto
+realizados por el Team Leader de Habilidades Socioemocionales o de Desarrollo,
+utilizando todos los medios disponibles.
+9.4. Protocolo ante presunción de abandono (Sede Medellín):
+• Una vez cumplidos los criterios de los numerales 9.1 o 9.2, el equipo de
+Habilidades Socioemocionales realiza un último intento de contacto formal
+vía correo electrónico verificado.
+• En esta comunicación se informa al coder sobre la presunción de abandono
+y se le otorga un plazo de tres (3) días hábiles para presentarse a la sede
+de Riwi.
+• Si el coder no se presenta durante los tres (3) días hábiles, se procede a
+contactar al acudiente si es menor de edad, y al codeudor si aplica cuando
+es mayor de edad.
+• Luego de surtir el espacio de socialización sobre el debido proceso de
+seguimiento, se procede a la activación de la cláusula de penalidad
+contemplada en el Acuerdo de Entrenamiento. El área jurídica emite los
+acuerdos de pago según lo estipulado en el Anexo 1, los cuales se envían
+al correo electrónico registrado.
+• El historial del coder se actualiza con la causal de desvinculación:
+"Abandono del puesto de entrenamiento".
+9.4. Protocolo ante presunción de abandono (Sede Barranquilla):
+El protocolo aplicable a la Sede Barranquilla seguirá los mismos lineamientos
+descritos anteriormente, adaptados a las condiciones operativas propias de la
+sede. La Coordinación de Habilidades Socioemocionales de Barranquilla será la
+responsable de su gestión.
+9.5 Activación del procedimiento contractual derivado del abandono
+declarado
+Una vez declarado formalmente el abandono del puesto de entrenamiento
+conforme al procedimiento establecido en el numeral 9, la institución emitirá
+comunicación oficial al correo electrónico registrado por el entrenado notificando
+el incumplimiento y otorgando un plazo de cinco (5) días hábiles para presentar
+justificación formal ante el canal definido por la institución.
+Recibida o vencida dicha oportunidad, el caso será remitido para revisión
+institucional, disponiéndose de hasta diez (10) días hábiles para analizar las
+circunstancias expuestas y determinar si procede eximir la consecuencia
+contractual aplicable o activar el procedimiento correspondiente previsto en el
+Acuerdo de Entrenamiento suscrito.
+En caso de no presentarse justificación dentro del término otorgado, o de resultar
+injustificados los motivos del abandono declarado, podrá activarse
+el procedimiento de cobro contemplado en el Acuerdo de Entrenamiento, iniciando
+en primera instancia una gestión prejudicial de cobro dirigida al entrenado y,
+cuando aplique, al avalista registrado.
+La activación de este procedimiento se realizará sin perjuicio del respeto al debido
+proceso y de las verificaciones institucionales previas previstas en este
+reglamento.
