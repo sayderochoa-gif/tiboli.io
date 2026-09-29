@@ -1,0 +1,792 @@
+<title>Sistema de Solicitudes HSE — Riwi</title>
+<style>
+  :root{
+    --bg:#FFFFFF; --surface:#FFFFFF; --surface-2:#F6F6FC; --surface-3:#ECECF8;
+    --ink:#201F2E; --ink-muted:#63637E; --ink-faint:#9696AC;
+    --border:#E9E9F2; --border-strong:#D9D9EA;
+    --accent:#AFA3FF; --accent-ink:#2B2570; --accent-strong:#5B4FDE; --accent-soft:#F0EEFF;
+    --success:#218F72; --success-soft:#DFF3EC;
+    --warning:#B8860B; --warning-soft:#F5EAD1;
+    --critical:#D14C63; --critical-soft:#FBE4E9;
+    --info:#5B6EF5; --info-soft:#E5E7FE;
+    --shadow: 0 1px 2px rgba(43,37,112,0.06), 0 6px 20px rgba(43,37,112,0.07);
+    --mono: ui-monospace, "SFMono-Regular", "Cascadia Code", "Roboto Mono", Consolas, monospace;
+    --sans: "Segoe UI", ui-sans-serif, "Helvetica Neue", Arial, sans-serif;
+    --radius: 10px;
+    --ease: cubic-bezier(.2,.7,.3,1);
+  }
+  /* Identidad de una sola pieza: fondo blanco fijo, acentos azul-violeta —
+     no cambia con el tema del sistema, por diseño. */
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans);
+    font-size:14px; line-height:1.5; -webkit-font-smoothing:antialiased;
+  }
+  ::selection{ background:var(--accent-soft); }
+  button, input, textarea, select{ font-family:inherit; font-size:inherit; color:inherit; }
+  button{ cursor:pointer; }
+  button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible, [tabindex]:focus-visible{
+    outline:2px solid var(--accent); outline-offset:2px;
+  }
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; animation:none !important; } }
+
+  .app{ display:flex; min-height:100vh; }
+
+  /* Sidebar */
+  .sidebar{
+    width:236px; flex:none; background:var(--surface); border-right:1px solid var(--border);
+    display:flex; flex-direction:column; padding:18px 14px; gap:18px;
+  }
+  .brand{ display:flex; align-items:center; gap:9px; padding:2px 4px; }
+  .brand-mark{
+    width:26px; height:26px; border-radius:6px; background:var(--accent); color:var(--accent-ink);
+    display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-weight:700; font-size:13px;
+  }
+  .brand-name{ font-weight:700; letter-spacing:-0.01em; font-size:15px; }
+  .brand-sub{ font-family:var(--mono); font-size:10.5px; color:var(--ink-faint); letter-spacing:.04em; margin-top:1px; }
+
+  .role-switch{
+    display:flex; background:var(--surface-2); border:1px solid var(--border); border-radius:8px; padding:3px; gap:3px;
+  }
+  .role-switch button{
+    flex:1; border:none; background:transparent; padding:6px 4px; border-radius:6px;
+    font-family:var(--mono); font-size:10.5px; letter-spacing:.03em; color:var(--ink-muted); font-weight:600;
+    transition:background-color .2s var(--ease), color .2s var(--ease), box-shadow .2s var(--ease);
+  }
+  .role-switch button.active{ background:var(--surface); color:var(--accent-strong); box-shadow:var(--shadow); }
+
+  nav.navlist{ display:flex; flex-direction:column; gap:2px; }
+  .nav-label{ font-family:var(--mono); font-size:10px; letter-spacing:.08em; color:var(--ink-faint); text-transform:uppercase; padding:10px 10px 4px; }
+  .nav-item{
+    display:flex; align-items:center; gap:10px; padding:8px 10px; border-radius:7px; border:none;
+    background:transparent; text-align:left; color:var(--ink-muted); font-weight:600; font-size:13px;
+    transition:background-color .16s var(--ease), color .16s var(--ease);
+  }
+  .nav-item:hover{ background:var(--surface-2); color:var(--ink); }
+  .nav-item.active{ background:var(--accent-soft); color:var(--accent-strong); }
+  .nav-icon{ width:16px; text-align:center; font-family:var(--mono); font-size:12px; opacity:.85; }
+  .nav-count{
+    margin-left:auto; font-family:var(--mono); font-size:10.5px; background:var(--surface-3); color:var(--ink-muted);
+    padding:1px 6px; border-radius:20px;
+  }
+  .nav-item.active .nav-count{ background:var(--accent); color:var(--accent-ink); }
+
+  .sidebar-foot{ margin-top:auto; padding-top:10px; border-top:1px solid var(--border); }
+  .who{ display:flex; align-items:center; gap:8px; padding:6px 4px; }
+  .avatar{ width:26px; height:26px; border-radius:50%; background:var(--info-soft); color:var(--info); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; }
+  .who-name{ font-size:12.5px; font-weight:600; }
+  .who-role{ font-size:11px; color:var(--ink-faint); }
+
+  /* Main */
+  .main{ flex:1; min-width:0; display:flex; flex-direction:column; }
+  .topbar{
+    display:flex; align-items:center; gap:14px; padding:14px 22px; border-bottom:1px solid var(--border);
+    background:var(--surface);
+  }
+  .topbar h1{ font-size:16px; margin:0; font-weight:700; letter-spacing:-0.01em; }
+  .topbar .asof{ font-family:var(--mono); font-size:11px; color:var(--ink-faint); }
+  .search{
+    margin-left:auto; display:flex; align-items:center; gap:6px; background:var(--surface-2); border:1px solid var(--border);
+    border-radius:8px; padding:6px 10px; width:260px;
+  }
+  .search input{ border:none; background:transparent; width:100%; color:var(--ink); }
+  .search input::placeholder{ color:var(--ink-faint); }
+
+  .view{ display:none; padding:20px 22px; flex:1; min-height:0; overflow:auto; }
+  .view.active{ display:flex; flex-direction:column; gap:16px; animation:viewIn .38s var(--ease) both; }
+  @keyframes viewIn{ from{ opacity:0; transform:translateY(10px); } to{ opacity:1; transform:none; } }
+
+  /* KPI tiles */
+  .kpis{ display:grid; grid-template-columns:repeat(auto-fit, minmax(160px,1fr)); gap:12px; }
+  .kpi{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:14px 16px;
+    box-shadow:var(--shadow); transition:transform .18s var(--ease), box-shadow .18s var(--ease);
+    animation:kpiIn .4s var(--ease) both;
+  }
+  .kpi:hover{ transform:translateY(-3px); box-shadow:0 10px 26px rgba(43,37,112,0.12); }
+  .kpi:nth-child(1){ animation-delay:0ms } .kpi:nth-child(2){ animation-delay:50ms }
+  .kpi:nth-child(3){ animation-delay:100ms } .kpi:nth-child(4){ animation-delay:150ms }
+  @keyframes kpiIn{ from{ opacity:0; transform:translateY(8px) scale(.98); } to{ opacity:1; transform:none; } }
+  .kpi-label{ font-family:var(--mono); font-size:10.5px; letter-spacing:.05em; color:var(--ink-faint); text-transform:uppercase; }
+  .kpi-value{ font-size:26px; font-weight:700; margin-top:4px; font-variant-numeric:tabular-nums; letter-spacing:-0.02em; }
+  .kpi-delta{ font-size:11.5px; margin-top:3px; color:var(--ink-muted); }
+  .kpi-delta.up{ color:var(--critical); } .kpi-delta.down{ color:var(--success); }
+
+  /* Case list + detail split */
+  .split{ display:flex; gap:16px; flex:1; min-height:0; }
+  .panel{ background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); display:flex; flex-direction:column; min-height:0; }
+  .list-panel{ width:420px; flex:none; }
+  .detail-panel{ flex:1; min-width:0; }
+  .panel-head{ padding:12px 14px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:8px; }
+  .panel-head h2{ font-size:13px; margin:0; font-weight:700; }
+  .filter-chip{
+    font-family:var(--mono); font-size:10.5px; border:1px solid var(--border); background:var(--surface-2);
+    padding:4px 8px; border-radius:20px; color:var(--ink-muted);
+    transition:background-color .15s var(--ease), color .15s var(--ease), border-color .15s var(--ease), transform .12s var(--ease);
+  }
+  .filter-chip:hover{ border-color:var(--border-strong); }
+  .filter-chip:active{ transform:scale(.94); }
+  .filter-chip.active{ background:var(--accent); color:var(--accent-ink); border-color:var(--accent); }
+  .filters{ display:flex; gap:6px; padding:10px 14px; border-bottom:1px solid var(--border); flex-wrap:wrap; }
+
+  .case-list{ overflow:auto; flex:1; }
+  .case-row{
+    display:flex; flex-direction:column; gap:5px; padding:11px 14px; border-bottom:1px solid var(--border);
+    cursor:pointer; border-left:3px solid transparent;
+    transition:background-color .15s var(--ease), border-color .15s var(--ease);
+    animation:rowIn .32s var(--ease) both;
+  }
+  .case-row:nth-child(1){animation-delay:0ms} .case-row:nth-child(2){animation-delay:30ms}
+  .case-row:nth-child(3){animation-delay:60ms} .case-row:nth-child(4){animation-delay:90ms}
+  .case-row:nth-child(5){animation-delay:120ms} .case-row:nth-child(n+6){animation-delay:150ms}
+  @keyframes rowIn{ from{ opacity:0; transform:translateX(-6px); } to{ opacity:1; transform:none; } }
+  .case-row:hover{ background:var(--surface-2); }
+  .case-row.selected{ background:var(--accent-soft); border-left-color:var(--accent-strong); }
+  .case-row-top{ display:flex; align-items:center; gap:8px; }
+  .case-id{ font-family:var(--mono); font-size:10.5px; color:var(--ink-faint); }
+  .case-coder{ font-weight:700; font-size:13px; }
+  .case-meta{ margin-left:auto; font-size:11px; color:var(--ink-muted); font-family:var(--mono); }
+  .case-row-bottom{ display:flex; align-items:center; gap:6px; }
+
+  .pill{
+    display:inline-flex; align-items:center; gap:5px; font-size:10.5px; font-weight:700; letter-spacing:.02em;
+    padding:2px 8px; border-radius:20px; font-family:var(--mono);
+  }
+  .pill::before{ content:""; width:6px; height:6px; border-radius:50%; background:currentColor; }
+  .pill.justificada{ background:var(--success-soft); color:var(--success); }
+  .pill.injustificada{ background:var(--critical-soft); color:var(--critical); }
+  .pill.evidencia{ background:var(--warning-soft); color:var(--warning); }
+  .pill.pendiente{ background:var(--info-soft); color:var(--info); }
+  .pill.aprobado{ background:var(--success-soft); color:var(--success); }
+  .pill.rechazado{ background:var(--critical-soft); color:var(--critical); }
+  .pill.normal{ background:var(--success-soft); color:var(--success); }
+  .pill.alerta{ background:var(--warning-soft); color:var(--warning); }
+  .pill.riesgo{ background:var(--critical-soft); color:var(--critical); }
+
+  .detail-empty{ display:flex; align-items:center; justify-content:center; flex:1; color:var(--ink-faint); font-size:13px; flex-direction:column; gap:8px; }
+  .detail-empty .big{ font-size:32px; opacity:.4; }
+
+  .detail-body{ padding:16px 18px; overflow:auto; flex:1; display:flex; flex-direction:column; gap:16px; animation:detailIn .32s var(--ease) both; }
+  @keyframes detailIn{ from{ opacity:0; transform:translateX(14px); } to{ opacity:1; transform:none; } }
+  .detail-header{ display:flex; align-items:flex-start; gap:12px; }
+  .detail-header .avatar{ width:38px; height:38px; font-size:14px; flex:none; }
+  .detail-title{ font-size:16px; font-weight:700; }
+  .detail-sub{ font-size:12px; color:var(--ink-muted); margin-top:2px; }
+  .detail-header .pill{ margin-left:auto; }
+
+  .field-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px; }
+  .field{ background:var(--surface-2); border:1px solid var(--border); border-radius:8px; padding:9px 11px; }
+  .field-label{ font-family:var(--mono); font-size:9.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-faint); }
+  .field-value{ font-size:13px; font-weight:600; margin-top:3px; }
+
+  .block{ border:1px solid var(--border); border-radius:9px; overflow:hidden; }
+  .block-head{ padding:9px 12px; background:var(--surface-2); border-bottom:1px solid var(--border); display:flex; align-items:center; gap:8px; }
+  .block-head h3{ margin:0; font-size:12px; font-weight:700; }
+  .block-body{ padding:12px; font-size:13px; }
+  .policy-note{ font-size:12px; color:var(--ink-muted); background:var(--surface-2); border-left:3px solid var(--accent); padding:8px 10px; border-radius:0 6px 6px 0; margin-top:8px; }
+  .history-row{ display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px dashed var(--border); font-size:12.5px; }
+  .history-row:last-child{ border-bottom:none; }
+  .history-row span:first-child{ color:var(--ink-muted); }
+
+  textarea.draft{
+    width:100%; min-height:120px; border:1px solid var(--border); border-radius:8px; padding:10px 12px;
+    background:var(--surface); color:var(--ink); resize:vertical; line-height:1.5;
+  }
+  .draft-meta{ display:flex; justify-content:space-between; align-items:center; margin-top:6px; font-size:11px; color:var(--ink-faint); }
+
+  .actions{ display:flex; gap:8px; flex-wrap:wrap; }
+  .btn{
+    border:1px solid var(--border); background:var(--surface); padding:8px 14px; border-radius:8px; font-weight:700;
+    font-size:12.5px; display:inline-flex; align-items:center; gap:6px;
+    transition:background-color .15s var(--ease), border-color .15s var(--ease), transform .12s var(--ease), box-shadow .15s var(--ease);
+  }
+  .btn:hover{ background:var(--surface-2); }
+  .btn:active{ transform:scale(.96); }
+  .btn.primary{ background:var(--accent); border-color:var(--accent); color:var(--accent-ink); box-shadow:0 4px 14px rgba(91,79,222,0.25); }
+  .btn.primary:hover{ background:var(--accent-strong); border-color:var(--accent-strong); color:#fff; }
+  .btn.danger{ color:var(--critical); border-color:var(--critical-soft); }
+  .btn.danger:hover{ background:var(--critical-soft); }
+  .btn.ghost{ border-color:transparent; background:transparent; color:var(--ink-muted); }
+
+  /* Coders table */
+  table.tbl{ width:100%; border-collapse:collapse; font-size:13px; }
+  .tbl thead th{
+    text-align:left; font-family:var(--mono); font-size:10px; letter-spacing:.05em; text-transform:uppercase;
+    color:var(--ink-faint); padding:9px 12px; border-bottom:1px solid var(--border); background:var(--surface-2);
+    position:sticky; top:0;
+  }
+  .tbl tbody td{ padding:10px 12px; border-bottom:1px solid var(--border); vertical-align:middle; }
+  .tbl tbody tr:hover{ background:var(--surface-2); }
+  .tbl .num{ font-variant-numeric:tabular-nums; font-family:var(--mono); font-size:12.5px; }
+  .route-tag{ font-size:11px; color:var(--ink-muted); background:var(--surface-2); border:1px solid var(--border); padding:2px 7px; border-radius:20px; }
+
+  /* Bars */
+  .barchart{ display:flex; flex-direction:column; gap:10px; }
+  .bar-row{ display:grid; grid-template-columns:120px 1fr 46px; align-items:center; gap:10px; }
+  .bar-label{ font-size:12px; color:var(--ink-muted); }
+  .bar-track{ height:10px; background:var(--surface-3); border-radius:6px; overflow:hidden; }
+  .bar-fill{ height:100%; background:var(--accent-strong); border-radius:6px; width:0; animation:fillIn .6s var(--ease) both; animation-delay:.1s; }
+  @keyframes fillIn{ from{ width:0 !important; } }
+  .bar-val{ font-family:var(--mono); font-size:11.5px; text-align:right; font-variant-numeric:tabular-nums; }
+
+  .two-col{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  @media (max-width:900px){ .two-col{ grid-template-columns:1fr; } .split{ flex-direction:column; } .list-panel{ width:auto; } }
+
+  /* Coder portal */
+  .portal-grid{ display:grid; grid-template-columns:380px 1fr; gap:16px; align-items:start; }
+  @media (max-width:820px){ .portal-grid{ grid-template-columns:1fr; } }
+  .form-row{ display:flex; flex-direction:column; gap:5px; margin-bottom:12px; }
+  .form-row label{ font-family:var(--mono); font-size:10.5px; letter-spacing:.04em; color:var(--ink-faint); text-transform:uppercase; }
+  .form-row input, .form-row select, .form-row textarea{
+    border:1px solid var(--border); border-radius:8px; padding:8px 10px; background:var(--surface); color:var(--ink);
+  }
+  .form-row textarea{ min-height:80px; resize:vertical; }
+  .filedrop{ border:1.5px dashed var(--border-strong); border-radius:8px; padding:14px; text-align:center; color:var(--ink-faint); font-size:12px; }
+
+  .toast{
+    position:fixed; bottom:20px; right:20px; background:var(--ink); color:var(--bg); padding:11px 16px; border-radius:9px;
+    font-size:13px; font-weight:600; box-shadow:var(--shadow); opacity:0; transform:translateY(8px); transition:opacity .25s, transform .25s; pointer-events:none; z-index:50;
+  }
+  .toast.show{ opacity:1; transform:translateY(0); }
+
+  .hint{ font-size:12px; color:var(--ink-faint); }
+  .divider-label{ font-family:var(--mono); font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-faint); margin:2px 0; }
+</style>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">R</div>
+      <div>
+        <div class="brand-name">Solicitudes HSE</div>
+        <div class="brand-sub">RIWI &middot; DEMO</div>
+      </div>
+    </div>
+
+    <div class="role-switch" role="tablist" aria-label="Cambiar de rol">
+      <button id="roleHse" class="active" onclick="setRole('hse')">Vista HSE</button>
+      <button id="roleCoder" onclick="setRole('coder')">Vista Coder</button>
+    </div>
+
+    <nav class="navlist" id="navHse">
+      <div class="nav-label">Operación</div>
+      <button class="nav-item active" data-view="bandeja" onclick="setView('bandeja')">
+        <span class="nav-icon">▤</span> Bandeja de casos <span class="nav-count" id="countPend">0</span>
+      </button>
+      <button class="nav-item" data-view="coders" onclick="setView('coders')">
+        <span class="nav-icon">◐</span> Coders en riesgo <span class="nav-count" id="countRiesgo">0</span>
+      </button>
+      <button class="nav-item" data-view="reportes" onclick="setView('reportes')">
+        <span class="nav-icon">▦</span> Reportes
+      </button>
+      <div class="nav-label">Sistema</div>
+      <button class="nav-item" data-view="config" onclick="setView('config')">
+        <span class="nav-icon">⚙</span> Políticas y umbrales
+      </button>
+    </nav>
+
+    <nav class="navlist" id="navCoder" style="display:none">
+      <div class="nav-label">Mi cuenta</div>
+      <button class="nav-item active" data-view="portal" onclick="setView('portal')">
+        <span class="nav-icon">✎</span> Radicar solicitud
+      </button>
+      <button class="nav-item" data-view="historial" onclick="setView('historial')">
+        <span class="nav-icon">🕘</span> Mi historial
+      </button>
+    </nav>
+
+    <div class="sidebar-foot">
+      <div class="who" id="whoBox">
+        <div class="avatar">MG</div>
+        <div>
+          <div class="who-name" id="whoName">Mariana Gómez</div>
+          <div class="who-role" id="whoRole">HSE · Analista</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <h1 id="viewTitle">Bandeja de casos</h1>
+      <span class="asof" id="viewSub">lunes 28 sep · 2026</span>
+      <div class="search" id="searchBox">
+        <span style="opacity:.5">⌕</span>
+        <input id="searchInput" placeholder="Buscar coder, motivo…" oninput="renderCaseList()" />
+      </div>
+    </div>
+
+    <!-- BANDEJA -->
+    <section class="view active" id="view-bandeja">
+      <div class="split">
+        <div class="panel list-panel">
+          <div class="panel-head"><h2>Casos</h2></div>
+          <div class="filters" id="filters"></div>
+          <div class="case-list" id="caseList"></div>
+        </div>
+        <div class="panel detail-panel" id="detailPanel">
+          <div class="detail-empty">
+            <div class="big">◐</div>
+            <div>Selecciona un caso para ver el expediente completo</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CODERS EN RIESGO -->
+    <section class="view" id="view-coders">
+      <div class="kpis" id="coderKpis"></div>
+      <div class="panel">
+        <div class="panel-head"><h2>Trazabilidad por coder</h2></div>
+        <div style="overflow:auto">
+          <table class="tbl">
+            <thead><tr>
+              <th>Coder</th><th>Ruta</th><th>Tardanzas</th><th>Permisos</th><th>Ausencias</th><th>Injustificados</th><th>Nivel</th><th>Último acuerdo</th>
+            </tr></thead>
+            <tbody id="codersTbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- REPORTES -->
+    <section class="view" id="view-reportes">
+      <div class="kpis" id="reportKpis"></div>
+      <div class="two-col">
+        <div class="panel">
+          <div class="panel-head"><h2>Casos por tipo (este mes)</h2></div>
+          <div class="block-body"><div class="barchart" id="barTipo"></div></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h2>Casos por ruta (este mes)</h2></div>
+          <div class="block-body"><div class="barchart" id="barRuta"></div></div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><h2>Consolidado — últimos 7 días</h2></div>
+        <div class="block-body"><div class="barchart" id="barDias"></div></div>
+      </div>
+    </section>
+
+    <!-- CONFIG -->
+    <section class="view" id="view-config">
+      <div class="panel">
+        <div class="panel-head"><h2>Umbrales de alerta (configurable por HSE)</h2></div>
+        <div class="block-body">
+          <table class="tbl">
+            <thead><tr><th>Tipo de caso</th><th>Cantidad</th><th>Ventana</th><th>Acción sugerida</th></tr></thead>
+            <tbody>
+              <tr><td>Tardanzas injustificadas</td><td class="num">3</td><td class="num">30 días</td><td>Alerta — seguimiento con coder</td></tr>
+              <tr><td>Ausencias sin evidencia</td><td class="num">2</td><td class="num">30 días</td><td>Riesgo de permanencia</td></tr>
+              <tr><td>Casos injustificados totales</td><td class="num">5</td><td class="num">90 días</td><td>Riesgo de permanencia</td></tr>
+            </tbody>
+          </table>
+          <p class="hint" style="margin-top:12px">Editable en el sistema real — aquí se muestra como referencia de solo lectura para la demo.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PORTAL CODER -->
+    <section class="view" id="view-portal">
+      <div class="portal-grid">
+        <div class="panel">
+          <div class="panel-head"><h2>Nueva solicitud</h2></div>
+          <div class="block-body">
+            <div class="form-row">
+              <label>Tipo de solicitud</label>
+              <select id="fTipo"><option>Tardanza</option><option>Permiso</option><option>Ausencia</option></select>
+            </div>
+            <div class="form-row">
+              <label>Fecha</label>
+              <input type="date" id="fFecha" />
+            </div>
+            <div class="form-row">
+              <label>Motivo</label>
+              <textarea id="fMotivo" placeholder="Describe brevemente la razón…"></textarea>
+            </div>
+            <div class="form-row">
+              <label>Evidencia (opcional)</label>
+              <div class="filedrop">Arrastra un archivo o haz clic para adjuntar<br/><span style="opacity:.7">PDF, JPG — máx. 5MB</span></div>
+            </div>
+            <button class="btn primary" style="width:100%; justify-content:center" onclick="submitSolicitud()">Enviar solicitud</button>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h2>Mis solicitudes — Valentina Ríos</h2></div>
+          <div class="case-list" id="myCases"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HISTORIAL CODER -->
+    <section class="view" id="view-historial">
+      <div class="kpis" id="historialKpis"></div>
+      <div class="panel">
+        <div class="panel-head">
+          <h2>Historial completo de asistencia</h2>
+          <div class="filters" id="historialFilters" style="border:none; padding:0; margin-left:auto"></div>
+        </div>
+        <div style="overflow:auto">
+          <table class="tbl">
+            <thead><tr><th>Fecha</th><th>Tipo</th><th>Motivo</th><th>Evidencia</th><th>Clasificación</th><th>Estado</th></tr></thead>
+            <tbody id="historialTbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const today = new Date(2026,8,28);
+function fmt(d){ return d.toLocaleDateString('es-CO',{day:'2-digit',month:'short'}); }
+function daysAgo(n){ const d=new Date(today); d.setDate(d.getDate()-n); return d; }
+
+const CODERS = [
+  {id:'c1', nombre:'Valentina Ríos', ruta:'Avanzada · JS', tardanza:3, permiso:1, ausencia:0, injustificados:2, acuerdo:'—'},
+  {id:'c2', nombre:'Andrés Palacio', ruta:'Básica · Python', tardanza:1, permiso:0, ausencia:1, injustificados:0, acuerdo:'—'},
+  {id:'c3', nombre:'Camila Zapata', ruta:'Avanzada · JS', tardanza:4, permiso:2, ausencia:2, injustificados:5, acuerdo:'12 sep 2026'},
+  {id:'c4', nombre:'Juan Esteban Ortiz', ruta:'Básica · Python', tardanza:0, permiso:1, ausencia:0, injustificados:0, acuerdo:'—'},
+  {id:'c5', nombre:'Laura Mosquera', ruta:'HSE · Socioemocional', tardanza:2, permiso:0, ausencia:1, injustificados:1, acuerdo:'—'},
+  {id:'c6', nombre:'Kevin Sánchez', ruta:'Avanzada · JS', tardanza:5, permiso:1, ausencia:3, injustificados:6, acuerdo:'20 sep 2026'},
+  {id:'c7', nombre:'Daniela Arboleda', ruta:'Básica · Python', tardanza:1, permiso:1, ausencia:0, injustificados:0, acuerdo:'—'},
+];
+function nivelCoder(c){
+  if(c.injustificados>=5 || c.ausencia>=2) return 'riesgo';
+  if(c.injustificados>=2 || c.tardanza>=3) return 'alerta';
+  return 'normal';
+}
+function initials(name){ return name.split(' ').filter((_,i)=>i<2).map(w=>w[0]).join('').toUpperCase(); }
+
+let CASES = [
+  {id:'C-1042', coderId:'c1', tipo:'Tardanza', fecha:daysAgo(0), motivo:'Se me dañó el bus de la ruta y llegué 40 min tarde a la sesión de la mañana.', evidencia:false, estado:'Pendiente',
+    clasif:'Requiere evidencia', prioridad:'Media',
+    politica:'Tardanzas por transporte público no cuentan como fuerza mayor salvo reporte oficial de la empresa transportadora (Acuerdo de Entrenamiento, num. 4.2).',
+    borrador:'Hola Valentina, gracias por avisar. Para poder marcar esta tardanza como justificada necesitamos un soporte del inconveniente de transporte (captura de la app, reporte de la empresa, etc.). Quedamos atentos a que lo envíes para cerrar el caso. — HSE Riwi'},
+  {id:'C-1041', coderId:'c3', tipo:'Ausencia', fecha:daysAgo(1), motivo:'No pude asistir, tuve un tema personal que preferiría no detallar por correo.', evidencia:false, estado:'Pendiente',
+    clasif:'Injustificada', prioridad:'Alta',
+    politica:'Motivo no específico y sin evidencia; Camila acumula 5 casos injustificados en 90 días, supera el umbral de riesgo de permanencia (Acuerdo, num. 5.1).',
+    borrador:'Hola Camila, esta ausencia queda registrada como injustificada por falta de motivo y evidencia verificable. Además, con este caso superas el número de incidencias injustificadas contempladas en el Acuerdo de Entrenamiento. Vamos a agendar una conversación contigo para revisar tu situación. — HSE Riwi'},
+  {id:'C-1040', coderId:'c6', tipo:'Ausencia', fecha:daysAgo(2), motivo:'Incapacidad médica por gripe, adjunto soporte de la EPS.', evidencia:true, estado:'Pendiente',
+    clasif:'Justificada', prioridad:'Baja',
+    politica:'Incapacidad médica con soporte de EPS es causal justificada explícita (Acuerdo, num. 3.1).',
+    borrador:'Hola Kevin, recibimos tu incapacidad médica y queda registrada como ausencia justificada. Que te mejores pronto. Recuerda ponerte al día con el material de la sesión. — HSE Riwi'},
+  {id:'C-1039', coderId:'c5', tipo:'Permiso', fecha:daysAgo(3), motivo:'Solicito permiso para cita médica programada el jueves en la mañana.', evidencia:true, estado:'Aprobado',
+    clasif:'Justificada', prioridad:'Baja',
+    politica:'Permiso solicitado con anticipación y soporte de cita médica (Acuerdo, num. 3.2).',
+    borrador:'Hola Laura, tu permiso para la cita médica del jueves queda aprobado. Gracias por avisar con anticipación. — HSE Riwi'},
+  {id:'C-1038', coderId:'c2', tipo:'Ausencia', fecha:daysAgo(4), motivo:'Cita en notaría para trámite familiar urgente, adjunto la cita.', evidencia:true, estado:'Aprobado',
+    clasif:'Justificada', prioridad:'Baja',
+    politica:'Trámite legal con soporte verificable, causal contemplada como caso de fuerza mayor (Acuerdo, num. 3.3).',
+    borrador:'Hola Andrés, tu ausencia por el trámite en notaría queda aprobada. Gracias por adjuntar el soporte. — HSE Riwi'},
+  {id:'C-1037', coderId:'c6', tipo:'Tardanza', fecha:daysAgo(5), motivo:'Se me pegaron las cobijas, disculpen.', evidencia:false, estado:'Rechazado',
+    clasif:'Injustificada', prioridad:'Alta',
+    politica:'Motivo no contemplado como causal justificable (Acuerdo, num. 4.1). Kevin acumula 6 casos injustificados.',
+    borrador:'Hola Kevin, esta tardanza queda registrada como injustificada. Ya es la sexta incidencia injustificada tuya en el periodo — vamos a citarte con HSE para conversar sobre tu continuidad en el programa. — HSE Riwi'},
+  {id:'C-1036', coderId:'c7', tipo:'Permiso', fecha:daysAgo(6), motivo:'Permiso para asistir a grado de mi hermana.', evidencia:false, estado:'Aprobado',
+    clasif:'Justificada', prioridad:'Baja',
+    politica:'Evento familiar excepcional, aprobado con criterio de HSE aunque no requiere evidencia obligatoria (Acuerdo, num. 3.4).',
+    borrador:'Hola Daniela, tu permiso queda aprobado, felicitaciones a tu hermana. — HSE Riwi'},
+  {id:'C-1035', coderId:'c1', tipo:'Ausencia', fecha:daysAgo(9), motivo:'No me sentía bien, no fui al médico.', evidencia:false, estado:'Rechazado',
+    clasif:'Injustificada', prioridad:'Media',
+    politica:'Sin evidencia médica ni soporte, no cumple causal justificable (Acuerdo, num. 3.1).',
+    borrador:'Hola Valentina, esta ausencia queda como injustificada por falta de soporte médico. Para futuros casos similares, te pedimos anexar una constancia. — HSE Riwi'},
+];
+let selectedCaseId = null;
+let currentView = 'bandeja';
+let currentFilter = 'todos';
+let currentRole = 'hse';
+const CURRENT_CODER_ID = 'c1';
+let historialFilter = 'todos';
+
+function coder(id){ return CODERS.find(c=>c.id===id); }
+function pillClass(text){
+  const map = {'Justificada':'justificada','Injustificada':'injustificada','Requiere evidencia':'evidencia',
+    'Pendiente':'pendiente','Aprobado':'aprobado','Rechazado':'rechazado',
+    'normal':'normal','alerta':'alerta','riesgo':'riesgo'};
+  return map[text] || 'pendiente';
+}
+
+function setRole(role){
+  currentRole = role;
+  document.getElementById('roleHse').classList.toggle('active', role==='hse');
+  document.getElementById('roleCoder').classList.toggle('active', role==='coder');
+  document.getElementById('navHse').style.display = role==='hse' ? 'flex':'none';
+  document.getElementById('navCoder').style.display = role==='coder' ? 'flex':'none';
+  document.getElementById('searchBox').style.visibility = role==='hse' ? 'visible':'hidden';
+  if(role==='hse'){
+    document.getElementById('whoName').textContent = 'Mariana Gómez';
+    document.getElementById('whoRole').textContent = 'HSE · Analista';
+    document.querySelector('#whoBox .avatar').textContent = 'MG';
+    setView('bandeja');
+  } else {
+    document.getElementById('whoName').textContent = 'Valentina Ríos';
+    document.getElementById('whoRole').textContent = 'Coder · Avanzada JS';
+    document.querySelector('#whoBox .avatar').textContent = 'VR';
+    setView('portal');
+  }
+}
+
+function setView(view){
+  currentView = view;
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+view).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(b=>b.classList.toggle('active', b.dataset.view===view));
+  const titles = {bandeja:'Bandeja de casos', coders:'Coders en riesgo', reportes:'Reportes y métricas', config:'Políticas y umbrales', portal:'Radicar solicitud', historial:'Mi historial de asistencia'};
+  document.getElementById('viewTitle').textContent = titles[view] || '';
+  if(view==='bandeja') renderCaseList();
+  if(view==='coders') renderCoders();
+  if(view==='reportes') renderReportes();
+  if(view==='portal') renderMyCases();
+  if(view==='historial') renderHistorial();
+}
+
+function setFilter(f){ currentFilter = f; renderCaseList(); }
+
+function renderFilters(){
+  const counts = {todos:CASES.length, Pendiente:0, Aprobado:0, Rechazado:0};
+  CASES.forEach(c=>counts[c.estado]=(counts[c.estado]||0)+1);
+  const defs = [['todos','Todos'],['Pendiente','Pendientes'],['Aprobado','Aprobados'],['Rechazado','Rechazados']];
+  document.getElementById('filters').innerHTML = defs.map(([k,label])=>
+    `<button class="filter-chip ${currentFilter===k?'active':''}" onclick="setFilter('${k}')">${label} · ${counts[k]||0}</button>`
+  ).join('');
+}
+
+function renderCaseList(){
+  renderFilters();
+  const q = (document.getElementById('searchInput').value||'').toLowerCase();
+  let list = CASES.filter(c=>{
+    if(currentFilter!=='todos' && c.estado!==currentFilter) return false;
+    if(!q) return true;
+    const cd = coder(c.coderId);
+    return cd.nombre.toLowerCase().includes(q) || c.motivo.toLowerCase().includes(q) || c.tipo.toLowerCase().includes(q);
+  }).sort((a,b)=> b.fecha - a.fecha);
+
+  document.getElementById('caseList').innerHTML = list.map(c=>{
+    const cd = coder(c.coderId);
+    return `<div class="case-row ${c.id===selectedCaseId?'selected':''}" onclick="selectCase('${c.id}')">
+      <div class="case-row-top">
+        <span class="case-id">${c.id}</span>
+        <span class="case-coder">${cd.nombre}</span>
+        <span class="case-meta">${fmt(c.fecha)}</span>
+      </div>
+      <div class="case-row-bottom">
+        <span class="pill ${pillClass(c.clasif)}">${c.clasif}</span>
+        <span class="pill ${pillClass(c.estado)}">${c.estado}</span>
+        <span style="margin-left:auto; font-size:11px; color:var(--ink-faint)">${c.tipo}</span>
+      </div>
+    </div>`;
+  }).join('') || '<div style="padding:20px; color:var(--ink-faint); font-size:13px;">No hay casos con este filtro.</div>';
+
+  document.getElementById('countPend').textContent = CASES.filter(c=>c.estado==='Pendiente').length;
+  document.getElementById('countRiesgo').textContent = CODERS.filter(c=>nivelCoder(c)==='riesgo').length;
+
+  if(selectedCaseId && list.some(c=>c.id===selectedCaseId)) renderDetail(selectedCaseId);
+}
+
+function selectCase(id){ selectedCaseId = id; renderCaseList(); renderDetail(id); }
+
+function renderDetail(id){
+  const c = CASES.find(x=>x.id===id);
+  const cd = coder(c.coderId);
+  const nivel = nivelCoder(cd);
+  const historial = CASES.filter(x=>x.coderId===cd.id && x.id!==c.id).slice(0,4);
+  document.getElementById('detailPanel').innerHTML = `
+    <div class="detail-body">
+      <div class="detail-header">
+        <div class="avatar">${initials(cd.nombre)}</div>
+        <div>
+          <div class="detail-title">${cd.nombre} <span style="color:var(--ink-faint); font-weight:400">· ${c.id}</span></div>
+          <div class="detail-sub">${cd.ruta} &middot; ${c.tipo} &middot; ${fmt(c.fecha)} 2026</div>
+        </div>
+        <span class="pill ${pillClass(nivel)}">${nivel==='riesgo'?'Riesgo de permanencia':nivel==='alerta'?'Alerta':'Normal'}</span>
+      </div>
+
+      <div class="field-grid">
+        <div class="field"><div class="field-label">Evidencia adjunta</div><div class="field-value">${c.evidencia?'Sí':'No'}</div></div>
+        <div class="field"><div class="field-label">Clasificación sugerida</div><div class="field-value"><span class="pill ${pillClass(c.clasif)}">${c.clasif}</span></div></div>
+        <div class="field"><div class="field-label">Prioridad</div><div class="field-value">${c.prioridad}</div></div>
+        <div class="field"><div class="field-label">Estado</div><div class="field-value"><span class="pill ${pillClass(c.estado)}">${c.estado}</span></div></div>
+      </div>
+
+      <div class="block">
+        <div class="block-head"><h3>Motivo reportado por el coder</h3></div>
+        <div class="block-body">“${c.motivo}”</div>
+      </div>
+
+      <div class="block">
+        <div class="block-head"><h3>Evaluación contra políticas de Riwi</h3></div>
+        <div class="block-body">
+          <div class="policy-note">${c.politica}</div>
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="block-head"><h3>Historial reciente de ${cd.nombre.split(' ')[0]}</h3></div>
+        <div class="block-body">
+          ${historial.length ? historial.map(h=>`<div class="history-row"><span>${fmt(h.fecha)} · ${h.tipo}</span><span class="pill ${pillClass(h.clasif)}" style="transform:scale(.92)">${h.clasif}</span></div>`).join('') : '<span class="hint">Sin casos previos registrados.</span>'}
+          <div class="history-row" style="border-top:1px solid var(--border); margin-top:6px; padding-top:8px; font-weight:700;">
+            <span>Total período</span><span class="num">${cd.tardanza+cd.permiso+cd.ausencia} casos &middot; ${cd.injustificados} injustificados</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="block-head"><h3>Borrador de respuesta sugerido</h3></div>
+        <div class="block-body">
+          <textarea class="draft" id="draftText">${c.borrador}</textarea>
+          <div class="draft-meta"><span>Generado a partir de la clasificación y la política citada — editable antes de enviar.</span></div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn primary" onclick="resolveCase('${c.id}','Aprobado')">✓ Aprobar y enviar</button>
+        <button class="btn" onclick="resolveCase('${c.id}','Pendiente','info')">✎ Pedir más información</button>
+        <button class="btn danger" onclick="resolveCase('${c.id}','Rechazado')">✕ Rechazar</button>
+        <button class="btn ghost" onclick="showToast('Borrador descartado, se restauró la sugerencia original')">Restaurar sugerencia</button>
+      </div>
+    </div>
+  `;
+}
+
+function resolveCase(id, estado, mode){
+  const c = CASES.find(x=>x.id===id);
+  c.estado = estado;
+  const msgs = {Aprobado:'Caso aprobado y respuesta enviada al coder', Rechazado:'Caso rechazado, se notificó al coder', Pendiente:'Se solicitó más información al coder'};
+  showToast(msgs[estado] || 'Caso actualizado');
+  renderCaseList();
+}
+
+function renderCoders(){
+  const withNivel = CODERS.map(c=>({...c, nivel:nivelCoder(c)}));
+  const riesgo = withNivel.filter(c=>c.nivel==='riesgo').length;
+  const alerta = withNivel.filter(c=>c.nivel==='alerta').length;
+  document.getElementById('coderKpis').innerHTML = `
+    <div class="kpi"><div class="kpi-label">Coders activos</div><div class="kpi-value">${CODERS.length}</div></div>
+    <div class="kpi"><div class="kpi-label">En riesgo de permanencia</div><div class="kpi-value" style="color:var(--critical)">${riesgo}</div></div>
+    <div class="kpi"><div class="kpi-label">En alerta</div><div class="kpi-value" style="color:var(--warning)">${alerta}</div></div>
+    <div class="kpi"><div class="kpi-label">Dentro de umbral</div><div class="kpi-value" style="color:var(--success)">${CODERS.length-riesgo-alerta}</div></div>
+  `;
+  document.getElementById('codersTbody').innerHTML = withNivel
+    .sort((a,b)=> ({riesgo:0,alerta:1,normal:2}[a.nivel]) - ({riesgo:0,alerta:1,normal:2}[b.nivel]) )
+    .map(c=>`<tr>
+      <td><strong>${c.nombre}</strong></td>
+      <td><span class="route-tag">${c.ruta}</span></td>
+      <td class="num">${c.tardanza}</td>
+      <td class="num">${c.permiso}</td>
+      <td class="num">${c.ausencia}</td>
+      <td class="num">${c.injustificados}</td>
+      <td><span class="pill ${pillClass(c.nivel)}">${c.nivel==='riesgo'?'Riesgo':c.nivel==='alerta'?'Alerta':'Normal'}</span></td>
+      <td class="num">${c.acuerdo}</td>
+    </tr>`).join('');
+}
+
+function renderReportes(){
+  const total = CASES.length;
+  const resueltos = CASES.filter(c=>c.estado!=='Pendiente').length;
+  const pendientes = total-resueltos;
+  const aprobRate = Math.round(100*CASES.filter(c=>c.estado==='Aprobado').length/resueltos);
+  document.getElementById('reportKpis').innerHTML = `
+    <div class="kpi"><div class="kpi-label">Solicitudes (mes)</div><div class="kpi-value">${total}</div></div>
+    <div class="kpi"><div class="kpi-label">Resueltas</div><div class="kpi-value">${resueltos}</div><div class="kpi-delta down">${pendientes} pendientes</div></div>
+    <div class="kpi"><div class="kpi-label">% Aprobadas</div><div class="kpi-value">${aprobRate}%</div></div>
+    <div class="kpi"><div class="kpi-label">Tiempo prom. de respuesta</div><div class="kpi-value">6.4h</div><div class="kpi-delta down">-71% vs. proceso manual</div></div>
+  `;
+  const byTipo = {};
+  CASES.forEach(c=>byTipo[c.tipo]=(byTipo[c.tipo]||0)+1);
+  const maxTipo = Math.max(...Object.values(byTipo));
+  document.getElementById('barTipo').innerHTML = Object.entries(byTipo).map(([k,v])=>`
+    <div class="bar-row"><span class="bar-label">${k}</span><div class="bar-track"><div class="bar-fill" style="width:${100*v/maxTipo}%"></div></div><span class="bar-val">${v}</span></div>
+  `).join('');
+
+  const byRuta = {};
+  CODERS.forEach(cd=>{ byRuta[cd.ruta]=(byRuta[cd.ruta]||0)+cd.tardanza+cd.permiso+cd.ausencia; });
+  const maxRuta = Math.max(...Object.values(byRuta));
+  document.getElementById('barRuta').innerHTML = Object.entries(byRuta).map(([k,v])=>`
+    <div class="bar-row"><span class="bar-label">${k}</span><div class="bar-track"><div class="bar-fill" style="width:${100*v/maxRuta}%; background:var(--info)"></div></div><span class="bar-val">${v}</span></div>
+  `).join('');
+
+  const days = [6,5,4,3,2,1,0].map(n=>{
+    const d = daysAgo(n);
+    const count = CASES.filter(c=> c.fecha.toDateString()===d.toDateString()).length;
+    return [d,count];
+  });
+  const maxDay = Math.max(1,...days.map(d=>d[1]));
+  document.getElementById('barDias').innerHTML = days.map(([d,v])=>`
+    <div class="bar-row"><span class="bar-label">${fmt(d)}</span><div class="bar-track"><div class="bar-fill" style="width:${100*v/maxDay}%; background:var(--success)"></div></div><span class="bar-val">${v}</span></div>
+  `).join('');
+}
+
+function renderMyCases(){
+  const mine = CASES.filter(c=>c.coderId===CURRENT_CODER_ID).sort((a,b)=>b.fecha-a.fecha);
+  document.getElementById('myCases').innerHTML = mine.map(c=>`
+    <div class="case-row" style="cursor:default">
+      <div class="case-row-top"><span class="case-id">${c.id}</span><span class="case-coder">${c.tipo}</span><span class="case-meta">${fmt(c.fecha)}</span></div>
+      <div class="case-row-bottom"><span class="pill ${pillClass(c.estado)}">${c.estado}</span><span style="margin-left:auto; font-size:11px; color:var(--ink-faint)">${c.evidencia?'Con evidencia':'Sin evidencia'}</span></div>
+    </div>
+  `).join('');
+}
+
+function submitSolicitud(){
+  const tipo = document.getElementById('fTipo').value;
+  const motivo = document.getElementById('fMotivo').value || 'Sin descripción adicional.';
+  const id = 'C-'+(1043+CASES.filter(c=>c.coderId===CURRENT_CODER_ID).length);
+  CASES.unshift({id, coderId:CURRENT_CODER_ID, tipo, fecha:new Date(today), motivo, evidencia:false, estado:'Pendiente',
+    clasif:'Requiere evidencia', prioridad:'Media',
+    politica:'Caso recién radicado, pendiente de evaluación automática contra políticas.',
+    borrador:'Hola Valentina, recibimos tu solicitud y está en revisión por parte de HSE. Te avisaremos apenas tengamos una respuesta. — HSE Riwi'});
+  showToast('Solicitud enviada a HSE');
+  document.getElementById('fMotivo').value='';
+  renderMyCases();
+}
+
+function setHistorialFilter(f){ historialFilter = f; renderHistorial(); }
+
+function renderHistorial(){
+  const mine = CASES.filter(c=>c.coderId===CURRENT_CODER_ID);
+  const cd = coder(CURRENT_CODER_ID);
+  const tardanzas = mine.filter(c=>c.tipo==='Tardanza').length;
+  const permisos = mine.filter(c=>c.tipo==='Permiso').length;
+  const ausencias = mine.filter(c=>c.tipo==='Ausencia').length;
+  const injustificados = mine.filter(c=>c.clasif==='Injustificada').length;
+
+  document.getElementById('historialKpis').innerHTML = `
+    <div class="kpi"><div class="kpi-label">Total de casos</div><div class="kpi-value">${mine.length}</div></div>
+    <div class="kpi"><div class="kpi-label">Tardanzas</div><div class="kpi-value">${tardanzas}</div></div>
+    <div class="kpi"><div class="kpi-label">Permisos</div><div class="kpi-value">${permisos}</div></div>
+    <div class="kpi"><div class="kpi-label">Ausencias</div><div class="kpi-value">${ausencias}</div></div>
+    <div class="kpi"><div class="kpi-label">Injustificados</div><div class="kpi-value" style="color:${injustificados>0?'var(--critical)':'var(--success)'}">${injustificados}</div></div>
+  `;
+
+  const defs = [['todos','Todos'],['Tardanza','Tardanzas'],['Permiso','Permisos'],['Ausencia','Ausencias']];
+  document.getElementById('historialFilters').innerHTML = defs.map(([k,label])=>
+    `<button class="filter-chip ${historialFilter===k?'active':''}" onclick="setHistorialFilter('${k}')">${label}</button>`
+  ).join('');
+
+  const list = mine.filter(c=> historialFilter==='todos' || c.tipo===historialFilter).sort((a,b)=>b.fecha-a.fecha);
+  document.getElementById('historialTbody').innerHTML = list.map(c=>`
+    <tr>
+      <td class="num">${fmt(c.fecha)} 2026</td>
+      <td>${c.tipo}</td>
+      <td style="max-width:260px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${c.motivo}">${c.motivo}</td>
+      <td>${c.evidencia?'Sí':'No'}</td>
+      <td><span class="pill ${pillClass(c.clasif)}">${c.clasif}</span></td>
+      <td><span class="pill ${pillClass(c.estado)}">${c.estado}</span></td>
+    </tr>
+  `).join('') || `<tr><td colspan="6" style="color:var(--ink-faint); text-align:center; padding:20px;">Sin casos registrados en este filtro.</td></tr>`;
+}
+
+let toastTimer;
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'), 2600);
+}
+
+renderCaseList();
+</script>
